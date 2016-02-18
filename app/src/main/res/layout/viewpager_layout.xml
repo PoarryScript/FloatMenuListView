@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/header"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/head_top"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:text="viewPager_Layout" />
+
+    <LinearLayout
+        android:id="@+id/fixheader"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#c1c1c1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/first_tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="头部" />
+
+        <Button
+            android:id="@+id/second_tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            android:text="头部" />
+
+        <Button
+            android:id="@+id/third_tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="头部" />
+
+    </LinearLayout>
+</LinearLayout>

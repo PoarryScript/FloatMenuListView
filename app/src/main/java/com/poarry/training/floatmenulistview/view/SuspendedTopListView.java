@@ -15,7 +15,7 @@ import android.widget.ListView;
 public class SuspendedTopListView extends ListView {
 
     private static final String TAG = "SuspendedTopListView";
-    private static boolean DEBUG_LIFECYCLE = false;
+    private static boolean DEBUG_LIFECYCLE = true;
     private View fixedHeader = null;
     private View mFloatView = null;
     private boolean isNeedDraw = false;
@@ -67,7 +67,7 @@ public class SuspendedTopListView extends ListView {
     protected void layoutChildren() {
         super.layoutChildren();
         if (DEBUG_LIFECYCLE) {
-            Log.d(TAG, "layoutChildren  " + this + "  ");
+//            Log.d(TAG, "layoutChildren  " + this + "  ");
         }
         ListAdapter adapter = getAdapter();
         fixedHeader = adapter.getView(0, null, this);
@@ -78,35 +78,17 @@ public class SuspendedTopListView extends ListView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (DEBUG_LIFECYCLE) {
-            Log.d(TAG, "onMeasure  " + this + "  ");
+//            Log.d(TAG, "onMeasure  " + this + "  ");
         }
-      /*  if (fixedHeader != null && mFloatView != null) {
-            LayoutParams layoutParams = (LayoutParams) fixedHeader.getLayoutParams();
-//            if (layoutParams == null) {
-                layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-//            }
-            int heightMode = MeasureSpec.getMode(layoutParams.height);
-            if (heightMode == MeasureSpec.UNSPECIFIED || heightMode == MeasureSpec.AT_MOST) {
-                heightMode = MeasureSpec.EXACTLY;
-            }
-            int heightSize = MeasureSpec.getSize(layoutParams.height);
-            int maxHeight = getHeight() - getListPaddingTop() - getListPaddingBottom();
-            if (heightSize > maxHeight) {
-                heightSize = maxHeight;
-            }
-            int widthSpec = MeasureSpec.makeMeasureSpec(getWidth() - getListPaddingLeft() - getListPaddingRight(), MeasureSpec.EXACTLY);
-            int heightSpec = MeasureSpec.makeMeasureSpec(heightSize, heightMode);
-            mFloatView.measure(widthSpec, heightSpec);
-        }*/
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         if (DEBUG_LIFECYCLE) {
-            Log.d(TAG, "onLayout  " + this + "  ");
+//            Log.d(TAG, "onLayout  " + this + "  ");
         }
-        if (fixedHeader != null && mFloatView != null) {
+        if (fixedHeader != null && mFloatView != null && isNeedDraw) {
             mFloatView.layout(0, 0, mFloatView.getMeasuredWidth(), mFloatView.getMeasuredHeight());
         }
     }
@@ -114,9 +96,6 @@ public class SuspendedTopListView extends ListView {
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if (DEBUG_LIFECYCLE) {
-            Log.d(TAG, "computeScroll  " + this + "  ");
-        }
         if (fixedHeader != null && mFloatView != null) {
             int headerHeight = mFloatView.getMeasuredHeight();
             int height = fixedHeader.getMeasuredHeight();
@@ -124,18 +103,25 @@ public class SuspendedTopListView extends ListView {
             //记录ListView的滚动高度
             int scrolly = -(fixedHeader.getTop()) + getFirstVisiblePosition() * item.getHeight();
             int position = (height - headerHeight);
+
             if (position <= scrolly) {
                 isNeedDraw = true;
+                invalidate();
+                Log.d(TAG, "computeScroll  " + " ---> " + scrolly);
                 mFloatView.layout(0, 0, mFloatView.getMeasuredWidth(),
-                        mFloatView.getMeasuredHeight() + 0);
+                        mFloatView.getMeasuredHeight());
             } else {
+                Log.d(TAG, "computeScroll  " +  " ---> " + false);
                 isNeedDraw = false;
-                mFloatView.layout(0, position, mFloatView.getMeasuredWidth(),
-                        mFloatView.getMeasuredHeight() + position);
+//                mFloatView.layout(0, position, mFloatView.getMeasuredWidth(),
+//                        mFloatView.getMeasuredHeight() + position);
+//                requestLayout();
+                invalidate();
+                mFloatView.layout(0, 0, 0, 0);
             }
+
         }
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -155,10 +141,12 @@ public class SuspendedTopListView extends ListView {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         if (DEBUG_LIFECYCLE) {
-            Log.d(TAG, "dispatchDraw  " + this + "  " + canvas);
+//            Log.d(TAG, "dispatchDraw  " + this + "  " + canvas);
         }
-        if (fixedHeader != null && mFloatView != null && isNeedDraw) {
-            drawChild(canvas, mFloatView, getDrawingTime());
+        if (fixedHeader != null && mFloatView != null ){
+            if (mFloatView.getVisibility() == VISIBLE) {
+                drawChild(canvas, mFloatView, getDrawingTime());
+            }
         }
 
     }
